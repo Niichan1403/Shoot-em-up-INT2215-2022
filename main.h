@@ -12,5 +12,6 @@ extern void presentScene(void);
 
 App app;
 Entity player;
+Entity bullet;
 
 
