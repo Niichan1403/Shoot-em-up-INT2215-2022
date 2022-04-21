@@ -1,20 +1,24 @@
 
 #include "main.h"
 
+static void capFrameRate(long* then, float* remainder);
+
 int main(int argc, char* argv[])
 {
+	long then;
+	float remainder;
+
 	memset(&app, 0, sizeof(App));
-	memset(&player, 0, sizeof(Entity));
-	memset(&bullet, 0, sizeof(Entity));
 
 	initSDL();
 
 	atexit(cleanup);
 
-	player.texture = loadTexture("gfx/player.png");
-	player.x = 250;
-	player.y = 300;
-	bullet.texture = loadTexture("gfx/playerBullet.png");
+	initStage();
+
+	then = SDL_GetTicks();
+
+	remainder = 0;
 
 	while (1)
 	{
@@ -22,57 +26,37 @@ int main(int argc, char* argv[])
 
 		doInput();
 
-		player.x += player.dx;
-		player.y += player.dy;
+		app.delegate.logic();
 
-		if (app.up)
-		{
-			player.y -= 4;
-		}
-
-		if (app.down)
-		{
-			player.y += 4;
-		}
-
-		if (app.left)
-		{
-			player.x -= 4;
-		}
-
-		if (app.right)
-		{
-			player.x += 4;
-		}
-
-		if (app.fire && bullet.health == 0) 
-		{
-			bullet.x = player.x;
-			bullet.y = player.y;
-			bullet.dx = 16;
-			bullet.dy = 0;
-			bullet.health = 1;
-		}
-
-		bullet.x += bullet.dx;
-		bullet.y += bullet.dy;
-
-		if (bullet.x > SCREEN_WIDTH) 
-		{
-			bullet.health = 0;
-		}
-
-		blit(player.texture, player.x, player.y);
-
-		if (bullet.health > 0) 
-		{
-			blit(bullet.texture, bullet.x, bullet.y);
-		}
+		app.delegate.draw();
 
 		presentScene();
 
-		SDL_Delay(16);
+		capFrameRate(&then, &remainder);
+	}
+	return 0;
+}
+
+static void capFrameRate(long* then, float* remainder) 
+{
+	long wait, frameTime;
+
+	wait = 16 + *remainder;
+
+	*remainder -= (int) * remainder;
+
+	frameTime = SDL_GetTicks() - *then;
+
+	wait -= frameTime;
+
+	if (wait < 1)
+	{
+		wait = 1;
 	}
 
-	return 0;
+	SDL_Delay(wait);
+
+	*remainder += 0.667;
+
+	*then = SDL_GetTicks();
 }
