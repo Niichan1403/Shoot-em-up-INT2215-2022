@@ -27,6 +27,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="draw.c" />
@@ -34,6 +35,7 @@
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="stage.c" />
+    <ClCompile Include="util.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -5,12 +5,17 @@ static void draw(void);
 static void initPlayer(void);
 static void fireBullet(void);
 static void doPlayer(void);
+static void doFighters(void);
 static void doBullets(void);
-static void drawPlayer(void);
+static void drawFighters(void);
 static void drawBullets(void);
+static void spawnEnemies(void);
+static int bulletHitFighter(Entity *b);
 
 static Entity* player;
 static SDL_Texture* bulletTexture;
+static SDL_Texture* enemyTexture;
+static int enemySpawnTimer;
 
 void initStage(void) 
 {
@@ -24,6 +29,9 @@ void initStage(void)
 	initPlayer();
 
 	bulletTexture = loadTexture("gfx/playerBullet.png");
+	enemyTexture = loadTexture("gfx/enemy.png");
+
+	enemySpawnTimer = 0;
 }
 
 static void initPlayer() 
@@ -37,13 +45,19 @@ static void initPlayer()
 	player->y = 100;
 	player->texture = loadTexture("gfx/player.png");
 	SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
+
+	player->side = SIDE_PLAYER;
 }
 
 static void logic(void) 
 {
 	doPlayer();
 
+	doFighters();
+
 	doBullets();
+
+	spawnEnemies();
 }
 
 static void doPlayer(void) 
@@ -75,9 +89,6 @@ static void doPlayer(void)
 	{
 		fireBullet();
 	}
-
-	player->x += player->dx;
-	player->y += player->dy;
 }
 
 static void fireBullet(void) 
@@ -98,7 +109,36 @@ static void fireBullet(void)
 
 	bullet->y += (player->h / 2) - (bullet->h / 2);
 
+	bullet->side = SIDE_PLAYER;
+
 	player->reload = 8;
+}
+
+static void doFighters(void) 
+{
+	Entity* e, * prev;
+
+	prev = &stage.fighterHead;
+
+	for (e = stage.fighterHead.next; e != NULL; e = e->next)
+	{
+		e->x += e->dx;
+		e->y += e->dy;
+
+		if (e != player && (e->x < -e->w || e->health == 0))
+		{
+			if (e == stage.fighterTail)
+			{
+				stage.fighterTail = prev;
+			}
+
+			prev->next = e->next;
+			free(e);
+			e = prev;
+		}
+
+		prev = e;
+	}
 }
 
 static void doBullets(void) 
@@ -112,7 +152,7 @@ static void doBullets(void)
 		b->x += b->dx;
 		b->y += b->dy;
 
-		if (b->x > SCREEN_WIDTH) 
+		if (bulletHitFighter(b) || b->x > SCREEN_WIDTH)
 		{
 			if (b == stage.bulletTail) 
 			{
@@ -128,16 +168,64 @@ static void doBullets(void)
 	}
 }
 
+static int bulletHitFighter(Entity *b) 
+{
+	Entity* e;
+
+	for (e = stage.fighterHead.next; e != NULL; e = e->next) 
+	{
+		if (e->side != b->side && collision(b->x, b->y, b->w, b->h, e->x, e->y, e->w, e->h)) 
+		{
+			b->health = 0;
+			e->health = 0;
+
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+static void spawnEnemies(void)
+{
+	Entity* enemy;
+
+	if (--enemySpawnTimer <= 0) 
+	{
+		enemy = malloc(sizeof(Entity));
+		memset(enemy, 0, sizeof(Entity));
+		stage.fighterTail->next = enemy;
+		stage.fighterTail = enemy;
+
+		enemy->x = SCREEN_WIDTH;
+		enemy->y = rand() % SCREEN_HEIGHT;
+		enemy->texture = enemyTexture;
+		SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
+
+		enemy->dx = -(2 + (rand() % 4));
+		
+		enemy->side = SIDE_ALIEN;
+		enemy->health = 1;
+		
+		enemySpawnTimer = 30 + (rand() % 60);
+	}
+}
+
 static void draw(void) 
 {
-	drawPlayer();
+	drawFighters();
 
 	drawBullets();
 }
 
-static void drawPlayer(void) 
+static void drawFighters(void) 
 {
-	blit(player->texture, player->x, player->y);
+	Entity* e;
+
+	for (e = stage.fighterHead.next; e != NULL; e = e->next) 
+	{
+		blit(e->texture, e->x, e->y);
+	}
 }
 
 static void drawBullets(void) 
