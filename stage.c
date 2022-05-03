@@ -11,11 +11,18 @@ static void drawFighters(void);
 static void drawBullets(void);
 static void spawnEnemies(void);
 static int bulletHitFighter(Entity *b);
+static void doEnemies(void);
+static void fireAlienBullet(Entity* e);
+static void clipPlayer(void);
+static void resetStage(void);
 
 static Entity* player;
 static SDL_Texture* bulletTexture;
 static SDL_Texture* enemyTexture;
+static SDL_Texture* playerTexture;
+static SDL_Texture* alienBulletTexture;
 static int enemySpawnTimer;
+static int stageResetTimer;
 
 void initStage(void) 
 {
@@ -26,12 +33,41 @@ void initStage(void)
 	stage.fighterTail = &stage.fighterHead;
 	stage.bulletTail = &stage.bulletHead;
 
-	initPlayer();
-
 	bulletTexture = loadTexture("gfx/playerBullet.png");
 	enemyTexture = loadTexture("gfx/enemy.png");
+	alienBulletTexture = loadTexture("gfx/alienBullet.png");
+	playerTexture = loadTexture("gfx/player.png");
+
+	resetStage();
+}
+
+static void resetStage(void)
+{
+	Entity* e;
+
+	while (stage.fighterHead.next) 
+	{
+		e = stage.fighterHead.next;
+		stage.fighterHead.next = e->next;
+		free(e);
+	}
+
+	while (stage.bulletHead.next) 
+	{
+		e = stage.bulletHead.next;
+		stage.bulletHead.next = e->next;
+		free(e);
+	}
+
+	memset(&stage, 0, sizeof(Stage));
+	stage.fighterTail = &stage.fighterHead;
+	stage.bulletTail = &stage.bulletHead;
+
+	initPlayer();
 
 	enemySpawnTimer = 0;
+
+	stageResetTimer = FPS * 2;
 }
 
 static void initPlayer() 
@@ -41,9 +77,10 @@ static void initPlayer()
 	stage.fighterTail->next = player;
 	stage.fighterTail = player;
 
+	player->health = 1;
 	player->x = 100;
 	player->y = 100;
-	player->texture = loadTexture("gfx/player.png");
+	player->texture = playerTexture;
 	SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
 
 	player->side = SIDE_PLAYER;
@@ -53,41 +90,53 @@ static void logic(void)
 {
 	doPlayer();
 
+	doEnemies();
+
 	doFighters();
 
 	doBullets();
 
 	spawnEnemies();
+
+	clipPlayer();
+
+	if (player == NULL && --stageResetTimer <= 0)
+	{
+		resetStage();
+	}
 }
 
 static void doPlayer(void) 
 {
-	player->dx = player->dy = 0;
+	if (player != NULL) 
+	{
+		player->dx = player->dy = 0;
 
-	if (player->reload > 0) 
-	{
-		player->reload--;
-	}
+		if (player->reload > 0)
+		{
+			player->reload--;
+		}
 
-	if (app.keyboard[SDL_SCANCODE_UP]) 
-	{
-		player->dy = -PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_DOWN])
-	{
-		player->dy = PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_LEFT])
-	{
-		player->dx = -PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_RIGHT])
-	{
-		player->dx = PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload == 0)
-	{
-		fireBullet();
+		if (app.keyboard[SDL_SCANCODE_UP])
+		{
+			player->dy = -PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_DOWN])
+		{
+			player->dy = PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_LEFT])
+		{
+			player->dx = -PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_RIGHT])
+		{
+			player->dx = PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0)
+		{
+			fireBullet();
+		}
 	}
 }
 
@@ -105,6 +154,7 @@ static void fireBullet(void)
 	bullet->dx = PLAYER_BULLET_SPEED;
 	bullet->health = 1;
 	bullet->texture = bulletTexture;
+	bullet->side = player->side;
 	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
 	bullet->y += (player->h / 2) - (bullet->h / 2);
@@ -112,6 +162,48 @@ static void fireBullet(void)
 	bullet->side = SIDE_PLAYER;
 
 	player->reload = 8;
+}
+
+static void doEnemies (void)
+{
+	Entity* e;
+
+	for (e = stage.fighterHead.next; e != NULL; e = e->next) 
+	{
+		if (e != player && player != NULL && --e->reload <= 0)
+		{
+			fireAlienBullet(e);
+		}
+	}
+}
+
+static void fireAlienBullet (Entity *e) 
+{
+	Entity* bullet;
+
+	bullet = malloc(sizeof(Entity));
+	memset(bullet, 0, sizeof(Entity));
+	stage.bulletTail->next = bullet;
+	stage.bulletTail = bullet;
+
+	bullet->x = e->x;
+	bullet->y = e->y;
+	bullet->health = 1;
+	bullet->texture = alienBulletTexture;
+	bullet->side = e->side;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+	
+	bullet->x += (e->w / 2) - (bullet->w / 2);
+	bullet->y += (e->h / 2) - (bullet->h / 2);
+
+	calcSlope(player->x + (player->w / 2), player->y + (player->h / 2), e->x, e->y, &bullet->dx, &bullet->dy);
+	
+	bullet->dx *= ALIEN_BULLET_SPEED;
+	bullet->dy *= ALIEN_BULLET_SPEED;
+
+	bullet->side = SIDE_ALIEN;
+
+	e->reload = (rand() % FPS * 2);
 }
 
 static void doFighters(void) 
@@ -125,8 +217,18 @@ static void doFighters(void)
 		e->x += e->dx;
 		e->y += e->dy;
 
-		if (e != player && (e->x < -e->w || e->health == 0))
+		if (e != player && e->x < -e->w) 
 		{
+			e->health = 0;
+		}
+
+		if (e->health == 0) 
+		{
+			if (e == player) 
+			{
+				player = NULL;
+			}
+
 			if (e == stage.fighterTail)
 			{
 				stage.fighterTail = prev;
@@ -152,7 +254,7 @@ static void doBullets(void)
 		b->x += b->dx;
 		b->y += b->dy;
 
-		if (bulletHitFighter(b) || b->x > SCREEN_WIDTH)
+		if (bulletHitFighter(b) || b->x < -b->w || b->y < -b->h ||  b->x > SCREEN_WIDTH || b->y > SCREEN_HEIGHT)
 		{
 			if (b == stage.bulletTail) 
 			{
@@ -206,8 +308,36 @@ static void spawnEnemies(void)
 		
 		enemy->side = SIDE_ALIEN;
 		enemy->health = 1;
+
+		enemy->reload = FPS * (1 + (rand() % 3));
 		
 		enemySpawnTimer = 30 + (rand() % 60);
+	}
+}
+
+static void clipPlayer (void)
+{
+	if (player != NULL) 
+	{
+		if (player->x < 0)
+		{
+			player->x = 0;
+		}
+
+		if (player->y < 0)
+		{
+			player->y = 0;
+		}
+
+		if (player->x > SCREEN_WIDTH / 2)
+		{
+			player->x = SCREEN_WIDTH / 2;
+		}
+
+		if (player->y > SCREEN_HEIGHT - player->h)
+		{
+			player->y = SCREEN_HEIGHT - player->h;
+		}
 	}
 }
 
