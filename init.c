@@ -22,6 +22,8 @@ void initSDL(void)
 	app.renderer = SDL_CreateRenderer(app.window, -1, rendererFlags);
 
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+
+	SDL_ShowCursor(0);
 }
 
 void cleanup(void)
