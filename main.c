@@ -16,6 +16,8 @@ int main(int argc, char* argv[])
 
 	initSounds();
 
+	initFonts();
+
 	initStage();
 
 	then = SDL_GetTicks();

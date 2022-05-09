@@ -10,6 +10,7 @@ extern SDL_Texture* loadTexture(char* filename);
 extern void loadMusic(char* filename);
 extern void playMusic(int loop);
 extern void playSound(int id, int channel);
+void drawText(int x, int y, int r, int g, int b, char* format, ...);
 
 extern App app;
 extern Stage stage;

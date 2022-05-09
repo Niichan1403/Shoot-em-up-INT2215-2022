@@ -28,6 +28,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="text.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +38,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="sound.c" />
     <ClCompile Include="stage.c" />
+    <ClCompile Include="text.c" />
     <ClCompile Include="util.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
