@@ -57,6 +57,10 @@ void initStage(void)
 	background = loadTexture("gfx/background.png");
 	explosionTexture = loadTexture("gfx/explosion.png");
 
+	loadMusic("music/X2Download.com - Meteor - Death Race (Round 2) (128 kbps).mp3");
+
+	playMusic(1);
+
 	resetStage();
 }
 
@@ -217,6 +221,8 @@ static void doPlayer(void)
 		}
 		if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0)
 		{
+			playSound(SND_PLAYER_FIRE, CH_PLAYER);
+
 			fireBullet();
 		}
 	}
@@ -255,6 +261,8 @@ static void doEnemies (void)
 		if (e != player && player != NULL && --e->reload <= 0)
 		{
 			fireAlienBullet(e);
+
+			playSound(SND_ALIEN_FIRE, CH_ALIEN_FIRE);
 		}
 	}
 }
@@ -365,7 +373,16 @@ static int bulletHitFighter(Entity *b)
 
 			addExplosions(e->x, e->y, 32);
 
-			//addDebris(e);
+			addDebris(e);
+
+			if (e == player) 
+			{
+				playSound(SND_PLAYER_DIE, CH_PLAYER);
+			}
+			else 
+			{
+				playSound(SND_ALIEN_DIE, CH_ANY);
+			}
 
 			return 1;
 		}
@@ -632,6 +649,7 @@ static void drawBackground(void)
 static void drawDebris(void)
 {
 	Debris* d;
+
 	for (d = stage.debrisHead.next; d != NULL; d = d->next)
 	{
 		blitRect(d->texture, &d->rect, d->x, d->y);
