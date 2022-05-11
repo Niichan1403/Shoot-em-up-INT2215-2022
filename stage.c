@@ -27,6 +27,9 @@ static void addDebris(Entity* e);
 static void doDebris(void);
 static void drawDebris(void);
 static void drawHud(void);
+static void doPointsPods(void);
+static void drawPointsPods(void);
+static void addPointsPod(int x, int y);
 
 static Entity* player;
 static SDL_Texture* bulletTexture;
@@ -35,6 +38,7 @@ static SDL_Texture* playerTexture;
 static SDL_Texture* alienBulletTexture;
 static SDL_Texture* background;
 static SDL_Texture* explosionTexture;
+static SDL_Texture* pointsTexture;
 static int enemySpawnTimer;
 static int stageResetTimer;
 static int backgroundX;
@@ -58,6 +62,7 @@ void initStage(void)
 	playerTexture = loadTexture("gfx/player.png");
 	background = loadTexture("gfx/background.png");
 	explosionTexture = loadTexture("gfx/explosion.png");
+	pointsTexture = loadTexture("gfx/points.png");
 
 	loadMusic("music/X2Download.com - Meteor - Death Race (Round 2) (128 kbps).mp3");
 
@@ -99,12 +104,20 @@ static void resetStage(void)
 		stage.debrisHead.next = d->next;
 		free(d);
 	}
+	
+	while (stage.pointsHead.next) 
+	{
+		e = stage.pointsHead.next;
+		stage.pointsHead.next = e->next;
+		free(e);
+	}
 
 	memset(&stage, 0, sizeof(Stage));
 	stage.fighterTail = &stage.fighterHead;
 	stage.bulletTail = &stage.bulletHead;
 	stage.explosionTail = &stage.explosionHead;
 	stage.debrisTail = &stage.debrisHead;
+	stage.pointsTail = &stage.pointsHead;
 
 	stage.score = 0;
 
@@ -162,6 +175,8 @@ static void logic(void)
 	doExplosions();
 
 	doDebris();
+
+	doPointsPods();
 
 	spawnEnemies();
 
@@ -385,11 +400,9 @@ static int bulletHitFighter(Entity *b)
 			}
 			else 
 			{
+				addPointsPod(e->x + e->w / 2, e->y + e->h / 2);
+
 				playSound(SND_ALIEN_DIE, CH_ANY);
-
-				stage.score++;
-
-				highscore = MAX(stage.score, highscore);
 			}
 
 			return 1;
@@ -509,6 +522,68 @@ static void doDebris(void)
 
 }
 
+static void doPointsPods(void) 
+{
+	Entity* e, * prev;
+
+	prev = &stage.pointsHead;
+
+	for (e = stage.pointsHead.next; e != NULL; e = e->next)
+	{
+		if (e->x < 0)
+		{
+			e->x = 0;
+			e->dx = -e->dx;
+		}
+
+		if (e->x + e->w > SCREEN_WIDTH)
+		{
+			e->x = SCREEN_WIDTH - e->w;
+			e->dx = -e->dx;
+		}
+
+		if (e->y < 0)
+		{
+			e->y = 0;
+			e->dy = -e->dy;
+		}
+
+		if (e->y + e->h > SCREEN_HEIGHT)
+		{
+			e->y = SCREEN_HEIGHT - e->h;
+			e->dy = -e->dy;
+		}
+
+		e->x += e->dx;
+		e->y += e->dy;
+
+		if (player != NULL && collision(e->x, e->y, e->w, e->h, player->x, player->y, player->h, player->w, player->h))
+		{
+			e->health = 0;
+
+			stage.score++;
+
+			highscore = MAX(stage.score, highscore);
+			
+			playSound(SND_POINTS, CH_POINTS);
+		}
+
+		if (--e->health <= 0)
+		{
+			if (e == stage.pointsTail)
+			{
+				stage.pointsTail = prev;
+			}
+
+			prev->next = e->next;
+			free(e);
+			e = prev;
+		}
+
+		prev = e;
+	}
+}
+
 static void addExplosions(int x, int y, int num) 
 {
 	Explosion* e;
@@ -589,11 +664,34 @@ static void addDebris(Entity *e)
 	}
 }
 
+static void addPointsPod(int x, int y)
+{
+	Entity* e;
+	e = malloc(sizeof(Entity));
+	memset(e, 0, sizeof(Entity));
+	stage.pointsTail->next = e;
+	stage.pointsTail = e;
+
+	e->x = x;
+	e->y = y;
+	e->dx = -(rand() % 5);
+	e->dy = (rand() % 5) - (rand() % 5);
+	e->health = FPS * 10;
+	e->texture = pointsTexture;
+
+	SDL_QueryTexture(e->texture, NULL, NULL, &e->w, &e->h);
+
+	e->x -= e->w / 2;
+	e->y -= e->h / 2;
+}
+
 static void draw(void) 
 {
 	drawBackground();
 
 	drawStarfield();
+
+	drawPointsPods();
 
 	drawFighters();
 
@@ -695,5 +793,15 @@ static void drawHud(void)
 	else 
 	{
 		drawText(960, 10, 255, 255, 255, "HIGHSCORE: %03d", highscore);
+	}
+}
+
+static void drawPointsPods(void)
+{
+	Entity* e;
+
+	for (e = stage.pointsHead.next; e != NULL; e = e->next) 
+	{
+		blit(e->texture, e->x, e->y);
 	}
 }
