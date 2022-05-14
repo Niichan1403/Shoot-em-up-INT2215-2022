@@ -9,16 +9,15 @@ int main(int argc, char* argv[])
 	float remainder;
 
 	memset(&app, 0, sizeof(App));
+	app.textureTail = &app.textureHead;
 
 	initSDL();
 
 	atexit(cleanup);
 
-	initSounds();
+	initGame();
 
-	initFonts();
-
-	initStage();
+	initHighscores();
 
 	then = SDL_GetTicks();
 

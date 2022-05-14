@@ -1,58 +1,8 @@
 ﻿D:\Microsoft\VisualStudio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Space Shooter.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  background.c
   draw.c
-  init.c
-  input.c
-  main.c
-D:\Github\SpaceShooter\main.c(48,12): warning C4244: '=': conversion from 'float' to 'long', possible loss of data
-D:\Github\SpaceShooter\main.c(63,21): warning C4305: '+=': truncation from 'double' to 'float'
-  sound.c
-  stage.c
-D:\Github\SpaceShooter\stage.c(308,22): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(308,51): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(308,71): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(308,77): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(388,40): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(388,46): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(388,64): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(388,70): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(393,19): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(393,25): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(403,23): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(403,40): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(427,21): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(431,15): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(463,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(541,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(553,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(560,36): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(560,42): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(560,65): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(560,76): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(560,109): warning C4020: 'collision': too many actual parameters
-D:\Github\SpaceShooter\stage.c(599,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(600,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(601,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(602,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(653,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(654,12): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(675,9): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(676,9): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(677,10): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(678,23): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\stage.c(713,21): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(713,27): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(723,21): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(723,27): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(763,35): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(763,41): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(779,27): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(779,33): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(805,21): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-D:\Github\SpaceShooter\stage.c(805,27): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
-  text.c
-D:\Github\SpaceShooter\text.c(23,14): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  util.c
-D:\Github\SpaceShooter\util.c(18,12): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Github\SpaceShooter\util.c(21,12): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  highscores.c
+D:\Github\SpaceShooter\highscores.c(67,12): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\Github\SpaceShooter\highscores.c(125,79): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   Generating Code...
   Space Shooter.vcxproj -> D:\Github\SpaceShooter\x64\Debug\Space_Shooter.exe

@@ -15,7 +15,7 @@ void initSDL(void)
 		exit(1);
 	}
 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == 1) 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) 
 	{
 		printf("Couldn't initialize SDL Mixer\n");
 		exit(1);
@@ -32,6 +32,23 @@ void initSDL(void)
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
 	SDL_ShowCursor(0);
+}
+
+void initGame(void) 
+{
+	initBackground();
+
+	initStarfield();
+
+	initSounds();
+
+	initFonts();
+
+	initHighscoreTable();
+
+	loadMusic("music/Meteor - Death Race (Round 2) (128 kbps).mp3");
+
+	playMusic(1);
 }
 
 void cleanup(void)

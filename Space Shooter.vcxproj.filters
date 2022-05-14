@@ -48,6 +48,12 @@
     <ClInclude Include="text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="highscores.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="background.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -72,6 +78,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="text.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="highscores.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="background.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

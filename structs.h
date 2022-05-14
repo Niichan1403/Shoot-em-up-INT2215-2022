@@ -3,6 +3,7 @@
 typedef struct Entity Entity;
 typedef struct Explosion Explosion;
 typedef struct Debris Debris;
+typedef struct Texture Texture;
 
 typedef struct 
 {
@@ -10,11 +11,19 @@ typedef struct
 	void (*draw)(void);
 } Delegate;
 
+struct Texture {
+	char name[MAX_NAME_LENGTH];
+	SDL_Texture* texture;
+	Texture* next;
+};
+
 typedef struct {
 	SDL_Renderer* renderer;
 	SDL_Window* window;
 	Delegate delegate;
 	int keyboard[MAX_KEYBOARD_KEYS];
+	Texture textureHead, * textureTail;
+	char inputText[MAX_LINE_LENGTH];
 } App;
 
 struct Entity {
@@ -66,3 +75,13 @@ typedef struct {
 	int y;
 	int speed;
 } Star;
+
+typedef struct {
+	char name[MAX_SCORE_NAME_LENGTH];
+	int recent;
+	int score;
+} Highscore;
+
+typedef struct {
+	Highscore highscore[NUM_HIGHSCORES];
+} Highscores;
