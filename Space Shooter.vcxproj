@@ -31,6 +31,7 @@
     <ClInclude Include="stage.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="text.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +44,7 @@
     <ClCompile Include="sound.c" />
     <ClCompile Include="stage.c" />
     <ClCompile Include="text.c" />
+    <ClCompile Include="title.c" />
     <ClCompile Include="util.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

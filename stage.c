@@ -234,11 +234,16 @@ static void doEnemies (void)
 
 	for (e = stage.fighterHead.next; e != NULL; e = e->next) 
 	{
-		if (e != player && player != NULL && --e->reload <= 0)
+		if (e != player)
 		{
-			fireAlienBullet(e);
+			e->y = MIN(MAX(e->y, 0), SCREEN_HEIGHT - e->h);
 
-			playSound(SND_ALIEN_FIRE, CH_ALIEN_FIRE);
+			if (player != NULL && --e->reload <= 0)
+			{
+				fireAlienBullet(e);
+
+				playSound(SND_ALIEN_FIRE, CH_ALIEN_FIRE);
+			}
 		}
 	}
 }
@@ -386,6 +391,8 @@ static void spawnEnemies(void)
 		SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
 
 		enemy->dx = -(2 + (rand() % 4));
+		enemy->dy = -100 + (rand() % 200);
+		enemy->dy /= 100;
 		
 		enemy->side = SIDE_ALIEN;
 		enemy->health = 1;
@@ -664,7 +671,10 @@ static void drawPointsPods(void)
 
 	for (e = stage.pointsHead.next; e != NULL; e = e->next)
 	{
-		blit(e->texture, e->x, e->y);
+		if (e->health > (FPS *2) || e->health % 12 < 6)
+		{
+			blit(e->texture, e->x, e->y);
+		}
 	}
 }
 

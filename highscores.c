@@ -9,6 +9,7 @@ static void drawNameInput(void);
 
 static Highscore *newHighscore;
 static int cursorBlink;
+static int timeout;
 
 void initHighscoreTable(void) 
 {
@@ -33,6 +34,8 @@ void initHighscores(void)
 	app.delegate.draw = draw;
 
 	memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
+
+	timeout = FPS * 5;
 }
 
 static void logic(void) 
@@ -47,6 +50,11 @@ static void logic(void)
 	}
 	else 
 	{
+		if (--timeout <= 0)
+		{
+			initTitle();
+		}
+
 		if (app.keyboard[SDL_SCANCODE_LCTRL])
 		{
 			initStage();
@@ -107,6 +115,11 @@ static void draw(void)
 	else 
 	{
 		drawHighscores();
+
+		if (timeout % 40 < 20)
+		{
+			drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE TO PLAY!");
+		}
 	}
 }
 
@@ -132,7 +145,7 @@ static void drawNameInput(void)
 		SDL_RenderFillRect(app.renderer, &r);
 	}
 
-	drawText(SCREEN_WIDTH / 2, 625, 255, 255, 255, TEXT_CENTER, "PRESS RETURN WHEN FINISHED");
+	drawText(SCREEN_WIDTH / 2, 625, 255, 255, 255, TEXT_CENTER, "PRESS ENTER WHEN FINISHED");
 }
 
 static void drawHighscores(void)
