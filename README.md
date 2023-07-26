@@ -6,7 +6,7 @@ Link demo project: https://www.youtube.com/watch?v=mrsT_WofAQ0
 
 ## Mô tả về các đối tượng trong trò chơi
 
-- ![](gfx/player.png) *Shooter* là nhân vật chính của trò chơi. Shooter có thể di chuyển theo 4 hướng trái/phải/lên/xuống hoặc theo góc chéo theo sự điều khiển của người chơi.
+- ![](gfx/player.png) <img src="gfx/player.png" width="32px"> *Shooter* là nhân vật chính của trò chơi. Shooter có thể di chuyển theo 4 hướng trái/phải/lên/xuống hoặc theo góc chéo theo sự điều khiển của người chơi.
 - ![](gfx/enemy.png) *Enemy* là các đối tượng mà Shooter phải tiêu diệt. Enemy xuất hiện ngẫu nhiên và có tốc độ di chuyển ngẫu nhiêu. Khi bị tiêu diệt Enemy sẽ sinh ra Point để Shooter thu thập.
 - ![](gfx/playerBullet.png) ![](gfx/alienBullet.png) *Bullet* là đối tượng mà cả Shooter và Enemy đều có thể bắn ra. Shooter có thể bắn ![](gfx/playerBullet.png) Bullet liên tục bằng nút CTRL, còn Enemy bắn ![](gfx/alienBullet.png) Bullet với rate ngẫu nhiên. Bullet của Enemy luôn bay theo hướng về vị trí hiện tại của Shooter.
 - ![](gfx/points.png) *Point* là đối tượng mà Enemy sẽ sinh ra khi bị tiêu diệt. Người chơi cần phải thu thập Point để có thể tăng điểm. Point sẽ di chuyển theo hướng ngẫu nhiên và nảy lại nếu chạm phải rìa màn hình của trò chơi. Point có thời gian sống giới hạn và sẽ biến mất nếu Shooter không kịp thu thập.
